@@ -9,6 +9,7 @@ struct AttribPointerLayout
 	unsigned int index;
 	unsigned int size;
 	unsigned int stride;
+	unsigned int offset;
 };
 
 class VertexArrayObject

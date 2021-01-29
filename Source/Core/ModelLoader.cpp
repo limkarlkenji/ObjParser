@@ -44,11 +44,19 @@ std::vector<float> ModelLoader::Open(const char * filePath)
 	infile.close();
 
 	// Test code
-	for (int k = 0; k < 8; k++)
-	{
-		texCoords.push_back(0.0f);
-		texCoords.push_back(0.0f);
-	}
+	texCoords.push_back(1.0f);
+	texCoords.push_back(0.0f);
+	texCoords.push_back(1.0f);
+	texCoords.push_back(1.0f);
+	texCoords.push_back(0.0f);
+	texCoords.push_back(1.0f);
+	texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f);
+	//for (int k = 0; k < 8; k++)
+	//{
+	//	texCoords.push_back(0.0f);
+	//	texCoords.push_back(0.0f);
+	//}
 
 	for (int k = 0; k < 12; k++)
 	{

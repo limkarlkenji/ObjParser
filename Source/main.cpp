@@ -8,6 +8,7 @@
 
 #include "Core/Reader.h"
 #include "Core/ModelLoader.h"
+#include "Core/Texture.h"
 
 #include "Core/Context.h"
 #include "Core/Shader.h"
@@ -50,7 +51,12 @@ int main()
 	VertexBufferObject VBO(std::data(vertices));
 	IndexBuffer EBO(Indices);
 
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8 });
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 });
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
+
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	VAO.Unbind();
 	EBO.Unbind();
@@ -67,7 +73,11 @@ int main()
 	Shader shader(Reader::Open("Resources/Shaders/VertexShader.glsl").c_str(), Reader::Open("Resources/Shaders/FragmentShader.glsl").c_str());
 	shader.Use();
 
+	Texture textureTest("Resources/Models/Material_ray.png");
+	textureTest.Bind();
+
 	PRINT(std::endl << "MAIN >> Rendering..." << std::endl);
+	
 
 	while (context.IsRendering())
 	{
@@ -85,6 +95,7 @@ int main()
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
 
 		VAO.Bind();
 

@@ -27,6 +27,6 @@ void VertexArrayObject::AddBuffer(const VertexBufferObject* vbo, const AttribPoi
 {
 	vbo->Bind();
 	PRINT("VAO >> Attrib Pointer enabled: " << layout.index << " " << layout.size << " " << layout.stride);
-	glVertexAttribPointer(layout.index, layout.size, GL_FLOAT, GL_FALSE, layout.stride * sizeof(float), (void*)0);
+	glVertexAttribPointer(layout.index, layout.size, GL_FLOAT, GL_FALSE, layout.stride * sizeof(float), (void*)(layout.offset * sizeof(float)));
 	glEnableVertexAttribArray(layout.index);
 }
