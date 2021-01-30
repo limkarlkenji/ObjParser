@@ -8,11 +8,37 @@
 #include "Logging.h"
 
 
+struct FaceData
+{
+	int pos;
+	int texCoord;
+	int normal;
+
+	bool operator==(const FaceData& rhs) const
+	{
+		return pos == rhs.pos; // or another approach as above
+	}
+};
+
 class ModelLoader
 {
 public:
-	static std::vector<float> Open(const char* filePath);
+	ModelLoader(const char * filePath);
+	~ModelLoader();
+
+	std::vector<float> GetVertexData() const { return _vertexData; };
+	std::vector<int> GetIndexData() const { return _indexData; };
+
 private:
-	static std::vector<float> Assemble(const std::vector<float> &position, const std::vector<float> &texCoords, const std::vector<float> &normals);
+	std::vector<float> _vertexData;
+	std::vector<int> _indexData;
+
+	std::vector<float> _vertPositions;
+	std::vector<float> _texCoords;
+	std::vector<float> _normals;
+	std::vector<FaceData> _faces;
+
+	std::vector<std::string> SeparateString(std::string line, int startPos, std::string separator) const;
+	void ParseFaces(const std::string &data);
 };
 

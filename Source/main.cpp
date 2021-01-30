@@ -40,23 +40,25 @@ int main()
 	//	1.0f, 0.0f, 0.0f
 	//};
 
-	std::vector<float> vertices = ModelLoader::Open("Resources/Models/Test.obj");
+	//std::vector<int> Indices = {
+	//0, 1, 2,   // first triangle
+	//2, 3, 0,    // second triangle
+	//};
 
-	std::vector<int> Indices = {
-		0, 1, 2,   // first triangle
-		2, 3, 0,    // second triangle
-	};
+	ModelLoader cube("Resources/Models/Test.obj");
+
+
 
 	VertexArrayObject VAO;
-	VertexBufferObject VBO(std::data(vertices));
-	IndexBuffer EBO(Indices);
+	VertexBufferObject VBO(std::data(cube.GetVertexData()));
+	IndexBuffer EBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 });
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
+	//VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
 
 	// texture coord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	/*glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);*/
 
 	VAO.Unbind();
 	EBO.Unbind();
@@ -73,8 +75,8 @@ int main()
 	Shader shader(Reader::Open("Resources/Shaders/VertexShader.glsl").c_str(), Reader::Open("Resources/Shaders/FragmentShader.glsl").c_str());
 	shader.Use();
 
-	Texture textureTest("Resources/Models/Material_ray.png");
-	textureTest.Bind();
+	/*Texture textureTest("Resources/Models/Material_ray.png");
+	textureTest.Bind();*/
 
 	PRINT(std::endl << "MAIN >> Rendering..." << std::endl);
 	
@@ -87,43 +89,39 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		
+		VAO.Bind();
+
+		/*glScissor(0, 0, context.GetScreenWidth()/2, 600);
+glEnable(GL_SCISSOR_TEST);
+glClearColor(0.5f, 0.3f, 0.5f, 1.0f);
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+glViewport(0, 0, context.GetScreenWidth() / 2, 600);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+glScissor(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);
+glEnable(GL_SCISSOR_TEST);
+glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
+
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 1.0f));
 
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-
-		VAO.Bind();
-
-		/*glScissor(0, 0, context.GetScreenWidth()/2, 600);
-		glEnable(GL_SCISSOR_TEST);
-		glClearColor(0.5f, 0.3f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, context.GetScreenWidth() / 2, 600);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		glScissor(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);
-		glEnable(GL_SCISSOR_TEST);
-		glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
-
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 2);
-
-		
 
 		glfwSwapBuffers(context.MainWindow);
 		glfwPollEvents(); // checks events
