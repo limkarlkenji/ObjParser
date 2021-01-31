@@ -41,25 +41,27 @@ ModelLoader::ModelLoader(const char * filePath)
 	}
 	infile.close();
 
-	for (int v = 0; v < _vertPositions.size(); v += 3) // Increment by 3(x, y, z)
+	int texBuffer = 0;
+	for (int v = 0; v < 8; v++) // Increment by 3(x, y, z)
 	{
-		for (int f = 0; f < _faces.size(); f++)
+		for (int p = 0; p < 3; p++)
 		{
-			if (v == _faces[f].pos * 3) // Multiplied face index by 3 to match vertexPosition index
-			{
-				_vertexData.push_back(_vertPositions[v]);
-				_vertexData.push_back(_vertPositions[v+1]);
-				_vertexData.push_back(_vertPositions[v+2]);
+			_vertexData.push_back(_vertPositions[(v * 3) + p]);
+			//PRINT(_vertPositions[(v * 3) + p] << " " << v << " " << p);
 
-				_vertexData.push_back(_texCoords[_faces[f].pos]);
-				_vertexData.push_back(_texCoords[_faces[f].pos] + 1);
+		}
 
-				_vertexData.push_back(_normals[_faces[f].pos]);
-				_vertexData.push_back(_normals[_faces[f].pos] + 1);
-				_vertexData.push_back(_normals[_faces[f].pos] + 2);
+		for (int t = 0; t < 2; t++)
+		{
+			_vertexData.push_back(_texCoords[(v * 2) + t]);
+			//_vertexData.push_back(_texCoords[v]);
+			//PRINT(_texCoords[(v * 2) + t] << " " << v << " " << t);
+		}
 
-				break;
-			}
+		for (int n = 0; n < 3; n++)
+		{
+			_vertexData.push_back(_normals[(v * 3) + n]);
+
 		}
 	}
 }
@@ -84,11 +86,11 @@ For the first vertex, 8 says which position to use. So in this case, -1.000000 1
 	std::vector<std::string> faces = SeparateString(data, 2, "/ ");
 	for (int o = 0; o < faces.size(); o+=3)
 	{
-		_faces.push_back(FaceData{ std::stoi(faces[o]), std::stoi(faces[o + 1]), std::stoi(faces[o + 2]) }); // Store faces to create vertex data for opengl
+		_faces.push_back(FaceData{ std::stoi(faces[o])-1, std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
 
 		if (o % 3 == 0)
 		{
-			_indexData.push_back(std::stoi(faces[o]));	// Indices for opengl
+			_indexData.push_back(std::stoi(faces[o])-1);	// Indices for opengl
 		}
 	}
 }

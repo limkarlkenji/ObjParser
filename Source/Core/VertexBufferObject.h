@@ -1,12 +1,13 @@
 #pragma once
 
+#include <vector>
 #include "Logging.h"
 #include <glad/glad.h>
 
 class VertexBufferObject
 {
 public:
-	VertexBufferObject(const void * data);
+	VertexBufferObject(std::vector<float> &data);
 	~VertexBufferObject();
 
 	void Bind() const;

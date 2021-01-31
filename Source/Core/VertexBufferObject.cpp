@@ -1,12 +1,13 @@
 #include "VertexBufferObject.h"
 
-VertexBufferObject::VertexBufferObject(const void * data)
+//VertexBufferObject::VertexBufferObject(const void * data)
+VertexBufferObject::VertexBufferObject(std::vector<float> &data)
 {
 	glGenBuffers(1, &_Id);
 	PRINT("VBO >> VBO generated");
 
 	Bind();
-	glBufferData(GL_ARRAY_BUFFER, 32 * sizeof(float), data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), std::data(data), GL_STATIC_DRAW);
 }
 
 VertexBufferObject::~VertexBufferObject()

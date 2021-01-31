@@ -7,8 +7,8 @@
 class IndexBuffer
 {
 public:
-	IndexBuffer(unsigned int * data[]);
-	IndexBuffer(std::vector<int> data);
+	IndexBuffer(unsigned int data[]);
+	IndexBuffer(std::vector<unsigned int> &data);
 	~IndexBuffer();
 
 	void Bind();

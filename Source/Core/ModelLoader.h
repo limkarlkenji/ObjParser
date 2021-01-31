@@ -26,12 +26,12 @@ public:
 	ModelLoader(const char * filePath);
 	~ModelLoader();
 
-	std::vector<float> GetVertexData() const { return _vertexData; };
-	std::vector<int> GetIndexData() const { return _indexData; };
+	std::vector<float> &GetVertexData() { return _vertexData; };
+	std::vector<unsigned int> &GetIndexData() { return _indexData; };
 
 private:
 	std::vector<float> _vertexData;
-	std::vector<int> _indexData;
+	std::vector<unsigned int> _indexData;
 
 	std::vector<float> _vertPositions;
 	std::vector<float> _texCoords;

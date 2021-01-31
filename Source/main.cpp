@@ -21,50 +21,41 @@ int main()
 	PRINT(std::endl << "MAIN >> Initialization..." << std::endl);
 	Context context(800, 600, "PROJECT1");
 
-	// make rule here vertices only
-	//float vertices[] = {
-	//	0.5f,  -0.5f, 0.0f,  // top right
-	//			1.0f, 1.0f,
-	//	0.0f, 0.0f, 0.0f,
+	// Expected data
+	//std::vector<float> te =
+	//{
+	//	-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//	0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//	-0.5f, 0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//	0.5f, 0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 
-	//	 0.5f, 0.5f, 0.0f,  // bottom right
-	//			 1.0f, 0.0f,
-	//	 0.0f, 0.0f, 1.0f,
+	//	-0.5f, 0.5f, -0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//	0.5f, 0.5f, -0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//	-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//	0.5f, -0.5f, -0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 
-	//	-0.5f,  0.5f, 0.0f,   // top left 
-	//			0.0f, 1.0f,
-	//	0.0f, 1.0f, 0.0f,
-
-	//	-0.5f, -0.5f, 0.0f,  // bottom left
-	//			0.0f, 0.0f,
-	//	1.0f, 0.0f, 0.0f
 	//};
 
-	//std::vector<int> Indices = {
+	//std::vector<unsigned int> Indices = {
 	//0, 1, 2,   // first triangle
-	//2, 3, 0,    // second triangle
+	//2, 1, 3,    // second triangle
+	//2, 3, 4
 	//};
 
 	ModelLoader cube("Resources/Models/Test.obj");
 
-
-
 	VertexArrayObject VAO;
-	VertexBufferObject VBO(std::data(cube.GetVertexData()));
+	VertexBufferObject VBO(cube.GetVertexData());
 	IndexBuffer EBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 });
-	//VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
-
-	// texture coord attribute
-	/*glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);*/
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
 
 	VAO.Unbind();
 	EBO.Unbind();
 	VBO.Unbind();
 
-	// create transformations
+	// Create transformations
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
@@ -79,7 +70,27 @@ int main()
 	textureTest.Bind();*/
 
 	PRINT(std::endl << "MAIN >> Rendering..." << std::endl);
-	
+
+	for (int i = 0; i < cube.GetVertexData().size(); i++)
+	{
+		if (i % 8 == 0)
+		{
+			PRINT("Vertex------------------------------------------------------------- " << i);
+
+		}
+		PRINT(cube.GetVertexData()[i]);
+	}
+
+	for (int k = 0; k < cube.GetIndexData().size(); k++)
+	{
+		if (k % 3 == 0)
+		{
+			PRINT("TRIANGLE------------------------------------------------------------- " << k);
+
+		}
+		PRINT(cube.GetIndexData()[k]);
+
+	}
 
 	while (context.IsRendering())
 	{
@@ -106,20 +117,20 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(0.2f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINE_STRIP, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
 
 		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 
 		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
 
 		//glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 2);
 
