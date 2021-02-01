@@ -3,7 +3,6 @@
 ModelLoader::ModelLoader(const char * filePath)
 {
 	std::ifstream infile;
-
 	infile.open(filePath);
 
 	std::vector<std::string> d;
@@ -42,28 +41,47 @@ ModelLoader::ModelLoader(const char * filePath)
 	infile.close();
 
 	int texBuffer = 0;
-	for (int v = 0; v < 8; v++) // Increment by 3(x, y, z)
+	for (int v = 0; v < _vertPositions.size()/3; v++) // Increment by 3(x, y, z)
 	{
 		for (int p = 0; p < 3; p++)
 		{
 			_vertexData.push_back(_vertPositions[(v * 3) + p]);
-			//PRINT(_vertPositions[(v * 3) + p] << " " << v << " " << p);
-
 		}
 
-		for (int t = 0; t < 2; t++)
+		if (_texCoords.size() > 0)
 		{
-			_vertexData.push_back(_texCoords[(v * 2) + t]);
-			//_vertexData.push_back(_texCoords[v]);
-			//PRINT(_texCoords[(v * 2) + t] << " " << v << " " << t);
+			for (int t = 0; t < 2; t++)
+			{
+				int index = (v * 2) + t;
+				if (index > _texCoords.size() - 1) // meaning there is less vt than v
+				{
+					_vertexData.push_back(0.0f);
+				}
+				else
+				{
+					_vertexData.push_back(_texCoords[index]);
+
+				}
+			}
 		}
 
 		for (int n = 0; n < 3; n++)
 		{
-			_vertexData.push_back(_normals[(v * 3) + n]);
+			int index = (v * 3) + n;
 
+			if (index > _normals.size() - 1) // meaning there is less vn than v
+			{
+				_vertexData.push_back(0.0f);
+			}
+			else
+			{
+				_vertexData.push_back(_normals[index]);
+			}
 		}
 	}
+
+	PRINT("MODEL LOADER >> Loaded file at " << filePath);
+	PRINT("MODEL LOADER >> Vertices(v): " << _vertPositions.size() << "  Texture Coordinates(vt): " << _texCoords.size() << "  Vertex Normals(vn): " << _normals.size());
 }
 
 ModelLoader::~ModelLoader()
@@ -83,9 +101,13 @@ For the first vertex, 8 says which position to use. So in this case, -1.000000 1
 7 says which normal to use. So in this case, 0.000000 1.000000 -0.000000
 			*/
 
+	
+	//std::vector<std::string> faces = validate(data, 2, '/');
+
 	std::vector<std::string> faces = SeparateString(data, 2, "/ ");
 	for (int o = 0; o < faces.size(); o+=3)
 	{
+		//_faces.push_back(FaceData{ std::stoi(faces[o])-1,  std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
 		_faces.push_back(FaceData{ std::stoi(faces[o])-1, std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
 
 		if (o % 3 == 0)
@@ -95,19 +117,63 @@ For the first vertex, 8 says which position to use. So in this case, -1.000000 1
 	}
 }
 
-
+// non separator = start of triple, look for first value, if after previous value the next character is a separtor/whtiespace, insert 0, repeat until a triple is formed
 std::vector<std::string> ModelLoader::SeparateString(std::string line, int startPos, std::string separator) const
 {
 	std::vector<std::string> data;
 	int index = line.find_first_not_of(separator, startPos); // Starting position to iterate
 	for (int i = index; i < line.size(); i = index)
 	{
-		int start = line.find_first_not_of(separator, index);	// Look for next non-whitespace character
-		int end = line.find_first_of(separator, index);				// Look for next whitespace character
+		int start = line.find_first_not_of(separator, index);	// Look for next non-separator character
+		int end = line.find_first_of(separator, index);				// Look for next separator character
 
 		index = line.find_first_not_of(separator, end);		// Update index to 'end'. This is where the next search should begin
 		data.push_back(line.substr(start, end - start));
 	}
 
+	return data;
+}
+
+// WIP Different face index structures
+// 1/2/3 4/8/6
+std::vector<std::string> ModelLoader::validate(std::string line, int startPos, char separator)
+{
+	std::vector<std::string> data;
+
+	int index = line.find_first_not_of(separator, startPos); // Starting position to iterate
+	for (int i = index; i < line.size(); i = index)
+	{
+		/*if (line[index] == separator)
+		{
+			data.push_back("0");
+			PRINT("0");
+			index++;
+		}
+		else*/
+		{
+			if (line[index] == separator)
+			{
+				data.push_back("0");
+				PRINT("0");
+				index++;
+			}
+			else
+			{
+			}
+
+			int start = line.find_first_not_of(separator, index);
+			int end = line.find_first_of("/ ", index);
+
+			data.push_back(line.substr(start, end - start));
+			PRINT(line.substr(start, end - start));
+			index = line.find_first_of("/ ", index) + 1;		// Update index to 'end'. This is where the next search should begin
+			
+
+			//index = line.find_first_not_of(separator, end);		// Update index to 'end'. This is where the next search should begin
+			
+			
+
+		}
+	}
 	return data;
 }

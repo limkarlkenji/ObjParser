@@ -40,5 +40,6 @@ private:
 
 	std::vector<std::string> SeparateString(std::string line, int startPos, std::string separator) const;
 	void ParseFaces(const std::string &data);
+	std::vector<std::string> validate(std::string line, int startPos, char separator);
 };
 

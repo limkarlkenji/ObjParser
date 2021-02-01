@@ -42,7 +42,7 @@ int main()
 	//2, 3, 4
 	//};
 
-	ModelLoader cube("Resources/Models/Test.obj");
+	ModelLoader cube("Resources/Models/Suzanne.obj");
 
 	VertexArrayObject VAO;
 	VertexBufferObject VBO(cube.GetVertexData());
@@ -70,27 +70,6 @@ int main()
 	textureTest.Bind();*/
 
 	PRINT(std::endl << "MAIN >> Rendering..." << std::endl);
-
-	for (int i = 0; i < cube.GetVertexData().size(); i++)
-	{
-		if (i % 8 == 0)
-		{
-			PRINT("Vertex------------------------------------------------------------- " << i);
-
-		}
-		PRINT(cube.GetVertexData()[i]);
-	}
-
-	for (int k = 0; k < cube.GetIndexData().size(); k++)
-	{
-		if (k % 3 == 0)
-		{
-			PRINT("TRIANGLE------------------------------------------------------------- " << k);
-
-		}
-		PRINT(cube.GetIndexData()[k]);
-
-	}
 
 	while (context.IsRendering())
 	{
@@ -123,7 +102,7 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-		glDrawElements(GL_LINE_STRIP, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_POINTS, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
 
 		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 
