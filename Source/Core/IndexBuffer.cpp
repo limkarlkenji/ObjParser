@@ -32,7 +32,6 @@ void IndexBuffer::LogIndices(std::vector<unsigned int> &data)
 	{
 		if (i % 3 == 0 && i < (data.size()))
 		{
-			//PRINT("INDEX " << i);
 			PRINT("Index " << data[i] << "/" << data[i+1] << "/" << data[i+2]);
 		}
 	}

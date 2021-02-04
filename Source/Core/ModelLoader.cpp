@@ -35,12 +35,11 @@ ModelLoader::ModelLoader(const char * filePath)
 		}
 		else if (currentLine.find("f ", 0) != currentLine.npos)
 		{
-			ParseFaces(currentLine);
+			GenerateIndexData(currentLine);
 		}
 	}
 	infile.close();
 
-	int texBuffer = 0;
 	for (int v = 0; v < _vertPositions.size()/3; v++) // Increment by 3(x, y, z)
 	{
 		for (int p = 0; p < 3; p++)
@@ -64,6 +63,11 @@ ModelLoader::ModelLoader(const char * filePath)
 				}
 			}
 		}
+		else
+		{
+			_vertexData.push_back(0.0f);
+			_vertexData.push_back(0.0f);
+		}
 
 		if (_normals.size() > 0)
 		{
@@ -81,7 +85,12 @@ ModelLoader::ModelLoader(const char * filePath)
 				}
 			}
 		}
-
+		else
+		{
+			_vertexData.push_back(0.0f);
+			_vertexData.push_back(0.0f);
+			_vertexData.push_back(0.0f);
+		}
 	}
 
 	PRINT("MODEL LOADER >> Loaded file at " << filePath);
@@ -92,7 +101,7 @@ ModelLoader::~ModelLoader()
 {
 }
 
-void ModelLoader::ParseFaces(const std::string &data)
+void ModelLoader::GenerateIndexData(const std::string &data)
 {
 	/*
 			v, vt and vn are simple to understand. f is more tricky. So, for f 8/11/7 7/12/7 6/10/7 :
@@ -106,13 +115,12 @@ For the first vertex, 8 says which position to use. So in this case, -1.000000 1
 			*/
 
 	
-	//std::vector<std::string> faces = validate(data, 2, '/');
+	std::vector<std::string> faces = ParseFaceData(data, 2, '/');
 
-	std::vector<std::string> faces = SeparateString(data, 2, "/ ");
 	for (int o = 0; o < faces.size(); o+=3)
 	{
 		//_faces.push_back(FaceData{ std::stoi(faces[o])-1,  std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
-		_faces.push_back(FaceData{ std::stoi(faces[o])-1, std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
+		//_faces.push_back(FaceData{ std::stoi(faces[o])-1, std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
 
 		if (o % 3 == 0)
 		{
@@ -140,44 +148,44 @@ std::vector<std::string> ModelLoader::SeparateString(std::string line, int start
 
 // WIP Different face index structures
 // 1/2/3 4/8/6
-std::vector<std::string> ModelLoader::validate(std::string line, int startPos, char separator)
+std::vector<std::string> ModelLoader::ParseFaceData(std::string line, int startPos, char separator)
 {
 	std::vector<std::string> data;
 
+	//PRINT(line);
+	std::vector<std::string> _sss = SeparateString(line, startPos, " ");
 	int index = line.find_first_not_of(separator, startPos); // Starting position to iterate
-	for (int i = index; i < line.size(); i = index)
+	for (int i = 0; i < _sss.size(); i++)
 	{
-		/*if (line[index] == separator)
+		//PRINT(" " << _sss[i]);
+		// 0/0/0
+		for (int j = 0; j < _sss[i].size();)
 		{
-			data.push_back("0");
-			PRINT("0");
-			index++;
-		}
-		else*/
-		{
-			if (line[index] == separator)
+			int start = _sss[i].find_first_not_of("/", j);
+			int end = _sss[i].find_first_of("/", start);
+
+			//PRINT(" " << _sss[i].substr(start, end-start));
+			data.push_back(_sss[i].substr(start, end - start));
+			if (end == std::string::npos)
 			{
-				data.push_back("0");
-				PRINT("0");
-				index++;
+				break;
 			}
 			else
+
 			{
+				j += end;
 			}
+		}
 
-			int start = line.find_first_not_of(separator, index);
-			int end = line.find_first_of("/ ", index);
-
-			data.push_back(line.substr(start, end - start));
-			PRINT(line.substr(start, end - start));
-			index = line.find_first_of("/ ", index) + 1;		// Update index to 'end'. This is where the next search should begin
-			
-
-			//index = line.find_first_not_of(separator, end);		// Update index to 'end'. This is where the next search should begin
-			
-			
+		if (_sss[i].find("/") == std::string::npos)
+		{
+			//PRINT(0);
+			//PRINT(0);
+			data.push_back("0");
+			data.push_back("0");
 
 		}
 	}
+
 	return data;
 }

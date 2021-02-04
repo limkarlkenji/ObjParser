@@ -23,7 +23,6 @@ int main()
 	PRINT(std::endl << "MAIN >> Initialization..." << std::endl);
 	Context context(800, 600, "PROJECT1");
 
-
 	// Expected data
 	//std::vector<float> vertices =
 	//{
@@ -44,18 +43,15 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	ModelLoader cube("Resources/Models/Suzanne.obj");
+	//ModelLoader cube("Resources/Models/cube.obj");
+	ModelLoader cube("Resources/Models/teapot.obj");
 
 	VertexArrayObject VAO;
 	VertexBufferObject VBO(cube.GetVertexData());
 	IndexBuffer IBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 }); // Index, size, stride, offset
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
-
-	VAO.Unbind();
-	IBO.Unbind();
-	VBO.Unbind();
+	//VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
 
 	// Create transformations
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -74,8 +70,12 @@ int main()
 	/*Texture textureTest("Resources/Models/Material_ray.png");
 	textureTest.Bind();*/
 
-	PRINT(std::endl << "MAIN >> Rendering..." << std::endl);
+	VAO.Unbind();
+	IBO.Unbind();
+	VBO.Unbind();
 
+	PRINT(std::endl << "MAIN >> Rendering..." << std::endl);
+	PRINT(cube.GetVertexData()[6 *8] << " " << cube.GetVertexData()[(6*8)+1 ] << " " << cube.GetVertexData()[(6*8)+2]);
 	while (context.IsRendering())
 	{
 		processInput(context.MainWindow, model);
@@ -109,11 +109,10 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		//glDrawElements(GL_LINES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
-		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
 
 		//glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-
 		//model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
 		//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		//glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -123,7 +122,6 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 		glfwSwapBuffers(context.MainWindow);
 		glfwPollEvents(); // checks events
 	}
-
 
 	glfwTerminate(); // clean glfw resources
 	PRINT(std::endl << "MAIN >> Terminating..." << std::endl);
@@ -140,18 +138,28 @@ void processInput(GLFWwindow *window, glm::mat4 &model)
 
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(5.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(5.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
+	{
+		model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
+	{
+		model = glm::scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
 	}
 }
