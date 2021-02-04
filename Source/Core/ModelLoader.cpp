@@ -65,19 +65,23 @@ ModelLoader::ModelLoader(const char * filePath)
 			}
 		}
 
-		for (int n = 0; n < 3; n++)
+		if (_normals.size() > 0)
 		{
-			int index = (v * 3) + n;
+			for (int n = 0; n < 3; n++)
+			{
+				int index = (v * 3) + n;
 
-			if (index > _normals.size() - 1) // meaning there is less vn than v
-			{
-				_vertexData.push_back(0.0f);
-			}
-			else
-			{
-				_vertexData.push_back(_normals[index]);
+				if (index > _normals.size() - 1) // meaning there is less vn than v
+				{
+					_vertexData.push_back(0.0f);
+				}
+				else
+				{
+					_vertexData.push_back(_normals[index]);
+				}
 			}
 		}
+
 	}
 
 	PRINT("MODEL LOADER >> Loaded file at " << filePath);

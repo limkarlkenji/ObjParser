@@ -12,7 +12,7 @@ public:
 
 	void Bind() const;
 	void Unbind() const;
-
+	void LogBuffer(std::vector<float> &data);
 private:
 	unsigned int _Id;
 };

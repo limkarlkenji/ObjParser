@@ -16,13 +16,16 @@
 #include "Core/VertexBufferObject.h"
 #include "Core/IndexBuffer.h"
 
+void processInput(GLFWwindow *window, glm::mat4 &model);
+
 int main()
 {
 	PRINT(std::endl << "MAIN >> Initialization..." << std::endl);
 	Context context(800, 600, "PROJECT1");
 
+
 	// Expected data
-	//std::vector<float> te =
+	//std::vector<float> vertices =
 	//{
 	//	-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	//	0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
@@ -36,27 +39,29 @@ int main()
 
 	//};
 
-	//std::vector<unsigned int> Indices = {
-	//0, 1, 2,   // first triangle
-	//2, 1, 3,    // second triangle
-	//2, 3, 4
+	//std::vector<unsigned int> indices = {
+	//0, 1, 2,		// first triangle
+	//2, 1, 3,		// second triangle
 	//};
 
 	ModelLoader cube("Resources/Models/Suzanne.obj");
 
 	VertexArrayObject VAO;
 	VertexBufferObject VBO(cube.GetVertexData());
-	IndexBuffer EBO(cube.GetIndexData());
+	IndexBuffer IBO(cube.GetIndexData());
 
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 });
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 }); // Index, size, stride, offset
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
 
 	VAO.Unbind();
-	EBO.Unbind();
+	IBO.Unbind();
 	VBO.Unbind();
 
 	// Create transformations
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	//model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
@@ -73,12 +78,11 @@ int main()
 
 	while (context.IsRendering())
 	{
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		processInput(context.MainWindow, model);
 
-		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
 		VAO.Bind();
 
 		/*glScissor(0, 0, context.GetScreenWidth()/2, 600);
@@ -95,22 +99,25 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
 
 
+		
+
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(0.2f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::rotate(model, glm::radians(0.2f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-		glDrawElements(GL_POINTS, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
-
-		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-
-		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
+		//glDrawElements(GL_LINES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
 
+
+		//glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+
+		//model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		//glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
+		//glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
 		//glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 2);
 
 		glfwSwapBuffers(context.MainWindow);
@@ -122,4 +129,29 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 	PRINT(std::endl << "MAIN >> Terminating..." << std::endl);
 
 	return 0;
+}
+
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
+void processInput(GLFWwindow *window, glm::mat4 &model)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+	}
 }

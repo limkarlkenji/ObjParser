@@ -7,12 +7,13 @@
 class IndexBuffer
 {
 public:
-	IndexBuffer(unsigned int data[]);
 	IndexBuffer(std::vector<unsigned int> &data);
 	~IndexBuffer();
 
 	void Bind();
 	void Unbind();
+	void LogIndices(std::vector<unsigned int> &data);
+	void LogIndices(std::vector<unsigned int> &indices, std::vector<float> &vertices);
 private:
 	unsigned int _Id;
 };

@@ -33,6 +33,9 @@ Context::Context(int width, int height, std::string name)
 	// Window settings
 	glViewport(0, 0, 800, 600);
 
+	// OpenGL settings
+	glEnable(GL_DEPTH_TEST);
+
 	PRINT("CONTEXT >> Vendor: " << glGetString(GL_VENDOR));
 	PRINT("CONTEXT >> Renderer: " << glGetString(GL_RENDERER));
 	PRINT("CONTEXT >> OpenGL version: " << glGetString(GL_VERSION));
