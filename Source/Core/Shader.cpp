@@ -71,8 +71,36 @@ unsigned int Shader::GetUniformLocation(const char* name) const
 	int loc = glGetUniformLocation(_Id, name);
 	if (loc == -1)
 	{
-		PRINT("Can't find " << name);
+		PRINT("Can't find " << name << " " << _Id);
+
 		
 	}
+
 	return loc;
+}
+
+void Shader::setVec3(const std::string &name, float x, float y, float z) const
+{
+	glUniform3f(glGetUniformLocation(_Id, name.c_str()), x, y, z);
+	PRINT("setting");
+}
+void Shader::GetActiveUniformList() const
+{
+	GLint success;
+	GLint size; // size of the variable
+	GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+	const GLsizei bufSize = 16; // maximum name length
+	GLchar name[bufSize]; // variable name in GLSL
+	GLsizei length; // name length
+	glGetProgramiv(_Id, GL_ACTIVE_UNIFORMS, &success);
+	PRINT("SHADER >> Program: " << _Id << " Active Uniforms: " << success);
+	//printf("SHADER >> Program Active Uniforms: %d\n", success);
+
+	for (int i = 0; i < success; i++)
+	{
+		glGetActiveUniform(_Id, (GLuint)i, bufSize, &length, &size, &type, name);
+
+		printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+	}
 }
