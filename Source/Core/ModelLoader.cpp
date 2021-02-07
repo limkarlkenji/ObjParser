@@ -164,7 +164,7 @@ std::vector<std::string> ModelLoader::ParseFaceData(std::string line, int startP
 			int start = _sss[i].find_first_not_of("/", j);
 			int end = _sss[i].find_first_of("/", start);
 
-			//PRINT(" " << _sss[i].substr(start, end-start));
+			PRINT(" " << _sss[i].substr(start, end-start));
 			data.push_back(_sss[i].substr(start, end - start));
 			if (end == std::string::npos)
 			{
@@ -173,14 +173,14 @@ std::vector<std::string> ModelLoader::ParseFaceData(std::string line, int startP
 			else
 
 			{
-				j += end;
+				j = end;
 			}
 		}
 
 		if (_sss[i].find("/") == std::string::npos)
 		{
-			//PRINT(0);
-			//PRINT(0);
+			/*PRINT(0);
+			PRINT(0);*/
 			data.push_back("0");
 			data.push_back("0");
 

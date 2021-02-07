@@ -11,7 +11,7 @@ uniform vec3 lightPosition;
 
 void main()
 {
-	vec3 color = vec3(1.0f, 0.5f, 31.0f);
+	vec3 color = vec3(1.0f, 0.5f, 0.31f);
 	float ambientStrength = 0.1f;
 	vec3 ambient = ambientStrength * lightColor;
 
@@ -21,7 +21,7 @@ void main()
 	vec3 diffuse = diff * lightColor;
 
 
-	FragColor = vec4((ambient + diffuse), 1.0f);
+	FragColor = vec4(color * (ambient + diffuse), 1.0f);
 	//FragColor = vec4(color * lightColor, 1.0f);
 
 	//FragColor = vec4(fragVert.x, fragVert.y, fragVert.z, 1.0f);
