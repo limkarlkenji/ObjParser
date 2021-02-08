@@ -3,7 +3,7 @@
 VertexBufferObject::VertexBufferObject(std::vector<float> &data)
 {
 	glGenBuffers(1, &_Id);
-	PRINT("VBO >> VBO generated");
+	PRINT("VBO >> VBO generated " << data.size());
 	//LogBuffer(data);
 
 	Bind();

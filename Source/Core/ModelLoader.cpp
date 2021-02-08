@@ -35,9 +35,26 @@ ModelLoader::ModelLoader(const char * filePath)
 		}
 		else if (currentLine.find("f ", 0) != currentLine.npos)
 		{
-			GenerateIndexData(currentLine);
+			//GenerateIndexData(currentLine);
+			//GenerateVertexData(currentLine);
+			std::vector<int> fData = ParseFaceData2(currentLine, 2, '/');//-1);
+			for (int i = 0; i < fData.size(); i++)
+			{
+				_faces.push_back(fData[i]);
+			}
 		}
 	}
+
+	GenerateVertexData();
+
+	//for (std::string currentLine; std::getline(infile, currentLine); )
+	//{
+	//	if (currentLine.find("f ", 0) != currentLine.npos)
+	//	{
+	//		GenerateVertexData(currentLine);
+	//	}
+	//}
+
 	infile.close();
 
 	for (int v = 0; v < _vertPositions.size()/3; v++) // Increment by 3(x, y, z)
@@ -157,7 +174,7 @@ std::vector<std::string> ModelLoader::ParseFaceData(std::string line, int startP
 	int index = line.find_first_not_of(separator, startPos); // Starting position to iterate
 	for (int i = 0; i < _sss.size(); i++)
 	{
-		//PRINT(" " << _sss[i]);
+		PRINT(" " << _sss[i]);
 		// 0/0/0
 		for (int j = 0; j < _sss[i].size();)
 		{
@@ -179,13 +196,124 @@ std::vector<std::string> ModelLoader::ParseFaceData(std::string line, int startP
 
 		if (_sss[i].find("/") == std::string::npos)
 		{
-			/*PRINT(0);
-			PRINT(0);*/
+			PRINT(0);
+			PRINT(0);
 			data.push_back("0");
 			data.push_back("0");
 
 		}
 	}
+
+	return data;
+}
+
+void ModelLoader::GenerateIndices()
+{
+}
+
+void ModelLoader::GenerateVertexData()
+{
+	// Vertex structure: v,v,v,  t,t,  n,n,n
+
+	int vertPosOffset = 3;
+	int texCoordsOffset = 2;
+	int normOffset = 3;
+
+	//if (std::find(_faceData.begin(), _faceData.end(), fData) != _faceData.end())
+	//{
+	//	PRINT("DUPLICATE!");
+	//}
+	//else
+	//{
+	//	PRINT("NO DUPLICATE");
+
+	//}
+
+	// Add vertex equal operation
+	for (int i = 0; i < _faceData.size(); i++) // v/t/n
+	{
+		PRINT(_faceData[i].pos << "/" << _faceData[i].texCoord<< "/" << _faceData[i].normal);
+		Vertex x(
+			_faceData[i],
+			_vertPositions[vertPosOffset * (_faceData[i].pos -1)],
+			_vertPositions[(vertPosOffset * (_faceData[i].pos -1))+1],
+			_vertPositions[(vertPosOffset * (_faceData[i].pos -1))+2],
+			_texCoords[(texCoordsOffset * (_faceData[i].texCoord-1))],
+			_texCoords[(texCoordsOffset * (_faceData[i].texCoord-1))+1],
+			_normals[(normOffset * (_faceData[i].normal -1))],
+			_normals[(normOffset * (_faceData[i].normal -1))+1],
+			_normals[(normOffset * (_faceData[i].normal -1))+2]);
+	}
+
+	//for (int i = 0; i < _faces.size(); i += 3) // v/t/n
+	//{
+	//	PRINT(_faces[i] << "/" << _faces[i + 1] << "/" << _faces[i + 2]);
+	//	PRINT(_faces[i] << "/" << _faces[i + 1] << "/" << _faces[i + 2]);
+	//	Vertex x(
+	//		_faces[i],
+	//		_vertPositions[vertPosOffset * (_faces[i] - 1)],
+	//		_vertPositions[(vertPosOffset * (_faces[i] - 1)) + 1],
+	//		_vertPositions[(vertPosOffset * (_faces[i] - 1)) + 2],
+	//		_texCoords[(texCoordsOffset * (_faces[i + 1] - 1))],
+	//		_texCoords[(texCoordsOffset * (_faces[i + 1] - 1)) + 1],
+	//		_normals[(normOffset * (_faces[i + 2] - 1))],
+	//		_normals[(normOffset * (_faces[i + 2] - 1)) + 1],
+	//		_normals[(normOffset * (_faces[i + 2] - 1)) + 2]);
+	//}
+
+}
+
+
+std::vector<int> ModelLoader::ParseFaceData2(std::string line, int startPos, char separator)
+{
+	std::vector<int> data;
+
+	//PRINT(line);
+	std::vector<std::string> _sss = SeparateString(line, startPos, " ");
+	int index = line.find_first_not_of(separator, startPos); // Starting position to iterate
+	for (int i = 0; i < _sss.size(); i++)
+	{
+		//PRINT(_sss[i]);
+		// 0/0/0
+		for (int j = 0; j < _sss[i].size();)
+		{
+			int start = _sss[i].find_first_not_of("/", j);
+			int end = _sss[i].find_first_of("/", start);
+
+			//PRINT(" " << _sss[i].substr(start, end - start));
+			data.push_back(stof(_sss[i].substr(start, end - start)));
+			if (end == std::string::npos)
+			{
+				break;
+			}
+			else
+
+			{
+				j = end;
+			}
+		}
+
+		if (_sss[i].find("/") == std::string::npos)
+		{
+			//PRINT(0);
+			//PRINT(0);
+			data.push_back(0);
+			data.push_back(0);
+
+		}
+
+
+		
+		
+	}
+	for (int f = 0; f < data.size(); f += 3)
+	{
+		FaceData fData(data[f], data[f + 1], data[f + 2]);
+		_faceData.push_back(fData);
+
+	}
+	
+
 
 	return data;
 }

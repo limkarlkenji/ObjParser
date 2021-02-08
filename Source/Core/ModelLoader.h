@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 #include "Logging.h"
 
@@ -14,9 +15,70 @@ struct FaceData
 	int texCoord;
 	int normal;
 
-	bool operator==(const FaceData& rhs) const
+	FaceData()
 	{
-		return pos == rhs.pos; // or another approach as above
+
+	};
+
+	FaceData(int posIndex, int texIndex, int normIndex)
+	{
+		pos = posIndex;
+		texCoord = texIndex;
+		normal = normIndex;
+
+		PRINT("FaceData " << pos << "/" << texCoord << "/" << normal);
+	}
+
+	bool operator==(const FaceData& other) const
+	{
+		//return pos == rhs.pos; // or another approach as above
+		//PRINT("Duplicate found " << pos << "/" << texCoord << "/" << normal);
+		return pos == other.pos && texCoord == other.texCoord && normal == other.normal; // or another approach as above
+	}
+};
+
+struct Vertex
+{
+	FaceData triplet;
+
+	std::vector<float> position;
+	std::vector<float> textureCoordinates;
+	std::vector<float> normals;
+	
+	Vertex(FaceData t, float posX, float posY, float posZ, float texU, float texV, float normX, float normY, float normZ)
+	{
+		position.reserve(3);
+		textureCoordinates.reserve(2);
+		normals.reserve(3);
+
+		//PRINT("XXXXX " << posX << " " << posY << " " <<posZ << " " << texU <<" " << texV);
+		triplet = t;
+
+		SetPosition(posX, posY, posZ);
+		SetTextureCoordinates(texU, texV);
+		SetNormals(normX, normY, normZ);
+		
+		PRINT("(" <<position[0] << ", " << position[1] << ", " << position[2] << ") (" << textureCoordinates[0] << ", " << textureCoordinates[1] << ") (" << normals[0] << ", " << normals[1] << ", " << normals[2] << ")");
+	};
+
+	void SetPosition(float posX, float posY, float posZ)
+	{
+		position.push_back(posX);
+		position.push_back(posY);
+		position.push_back(posZ);
+	}
+
+	void SetTextureCoordinates(float texU, float texV)
+	{
+		textureCoordinates.push_back(texU);
+		textureCoordinates.push_back(texV);
+	}
+
+	void SetNormals(float normX, float normY, float normZ)
+	{
+		normals.push_back(normX);
+		normals.push_back(normY);
+		normals.push_back(normZ);
 	}
 };
 
@@ -36,10 +98,15 @@ private:
 	std::vector<float> _vertPositions;
 	std::vector<float> _texCoords;
 	std::vector<float> _normals;
-	std::vector<FaceData> _faces;
+	std::vector<int> _faces;
+	std::vector<FaceData> _faceData;
 
 	std::vector<std::string> SeparateString(std::string line, int startPos, std::string separator) const;
 	void GenerateIndexData(const std::string &data);
+	void GenerateVertexData();
+	void GenerateIndices();
 	std::vector<std::string> ParseFaceData(std::string line, int startPos, char separator);
+	std::vector<int> ParseFaceData2(std::string line, int startPos, char separator);
+	
 };
 

@@ -43,37 +43,50 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	ModelLoader cube("Resources/Models/teapot.obj");
+	ModelLoader cube("Resources/Models/cube.obj");
 	ModelLoader lightSource("Resources/Models/cube.obj");
 
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPosition(5.0f, 10.0f, -5.0f);
+	glm::vec3 cameraPosition(0.0f, -5.0f, -50.0f);
 
 	VertexArrayObject VAO;
 	VertexBufferObject VBO(cube.GetVertexData());
 	IndexBuffer IBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 }); // Index, size, stride, offset
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 3, 8, 5 }); // Index, size, stride, offset
+
+	VBO.LogBuffer(cube.GetVertexData());
+	for (int i = 0; i < cube.GetVertexData().size(); i+=8)
+	{
+			PRINT(cube.GetVertexData()[i + 5]);
+
+	}
 	//VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
 
 	// Create transformations
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
-	//model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+	//model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+	model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	view = glm::translate(view, glm::vec3(0.0f, -10.0f, -50.0f));
+	view = glm::translate(view, cameraPosition);
 	projection = glm::perspective(glm::radians(45.0f), (float)context.GetScreenWidth() / (float)context.GetScreenHeight(), 0.1f, 100.0f);
 
 	Shader shader(Reader::Open("Resources/Shaders/VertexShader.glsl").c_str(), Reader::Open("Resources/Shaders/FragmentShader.glsl").c_str());
 	shader.Use();
 	shader.GetActiveUniformList();
 	
+	glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
 	glUniform3fv(shader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
 	glUniform3fv(shader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
+	glUniform3fv(shader.GetUniformLocation("viewPos"), 1, glm::value_ptr(cameraPosition));
 
 
 	/*Texture textureTest("Resources/Models/Material_ray.png");
@@ -94,18 +107,12 @@ int main()
 	model2 = glm::scale(model2, glm::vec3(0.5f, 0.5f, 0.5f));
 	model2 = glm::translate(model2, lightPosition);
 
-	glm::mat4 view2 = glm::mat4(1.0f);
-	glm::mat4 projection2 = glm::mat4(1.0f);
-
-	view2 = glm::translate(view2, glm::vec3(0.0f, -10.0f, -50.0f));
-	projection2 = glm::perspective(glm::radians(45.0f), (float)context.GetScreenWidth() / (float)context.GetScreenHeight(), 0.1f, 100.0f);
-
 	Shader shader2(Reader::Open("Resources/Shaders/LightSource_VS.glsl").c_str(), Reader::Open("Resources/Shaders/LightSource_FS.glsl").c_str());
 	shader2.Use();
 
-	/*glUniformMatrix4fv(shader2.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model2));
-	glUniformMatrix4fv(shader2.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view2));
-	glUniformMatrix4fv(shader2.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection2));*/
+	//glUniformMatrix4fv(shader2.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model2));
+	glUniformMatrix4fv(shader2.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(shader2.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 	VAO2.Unbind();
 	IBO2.Unbind();
@@ -134,32 +141,24 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
 
 		shader.Use();
+
 		glUniform3fv(shader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
 		glUniform3fv(shader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
+		glUniform3fv(shader.GetUniformLocation("viewPos"), 1, glm::value_ptr(cameraPosition));
+
+
 		VAO.Bind();
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(shader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-		//glDrawElements(GL_LINES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
+		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
-		//glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-		//model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
-		//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		//glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
-		//glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, 0);
-		//glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 2);
 
 		shader2.Use();
 		VAO2.Bind();
-
-		
 		glUniformMatrix4fv(shader2.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model2));
-		glUniformMatrix4fv(shader2.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view2));
-		glUniformMatrix4fv(shader2.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection2));
 		glDrawElements(GL_TRIANGLES, lightSource.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
 
@@ -202,6 +201,18 @@ void processInput(GLFWwindow *window, glm::mat4 &model, glm::vec3 &lightpos)
 		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
 		lightpos = lightpos + glm::vec3(1.0f, 0.0f, 0.0f);
 	}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f));
+		lightpos = lightpos + glm::vec3(0.0f, 1.0f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	{
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+		lightpos = lightpos + glm::vec3(0.0f, -1.0f, 0.0f);
+	}
+
+
 
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
