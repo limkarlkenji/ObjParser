@@ -43,12 +43,11 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	ModelLoader cube("Resources/Models/cube.obj");
+	ModelLoader cube("Resources/Models/Cube.obj");
 	ModelLoader lightSource("Resources/Models/cube.obj");
 
-
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPosition(5.0f, 10.0f, -5.0f);
+	glm::vec3 lightPosition(5.0f, 10.0f, -10.0f);
 	glm::vec3 cameraPosition(0.0f, -5.0f, -50.0f);
 
 	VertexArrayObject VAO;
@@ -56,15 +55,15 @@ int main()
 	IndexBuffer IBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 }); // Index, size, stride, offset
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 3, 8, 5 }); // Index, size, stride, offset
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 2, 3, 8, 5 }); // Index, size, stride, offset
 
-	VBO.LogBuffer(cube.GetVertexData());
+	/*VBO.LogBuffer(cube.GetVertexData());
 	for (int i = 0; i < cube.GetVertexData().size(); i+=8)
 	{
 			PRINT(cube.GetVertexData()[i + 5]);
 
 	}
-	//VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 });*/
 
 	// Create transformations
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -141,17 +140,13 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
 
 		shader.Use();
-
 		glUniform3fv(shader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
 		glUniform3fv(shader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
 		glUniform3fv(shader.GetUniformLocation("viewPos"), 1, glm::value_ptr(cameraPosition));
-
-
 		VAO.Bind();
 		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glUniformMatrix4fv(shader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(shader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
@@ -172,6 +167,7 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 	return 0;
 }
 
+// TODO work on lightpos
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window, glm::mat4 &model, glm::vec3 &lightpos)

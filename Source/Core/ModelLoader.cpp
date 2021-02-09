@@ -7,6 +7,11 @@ ModelLoader::ModelLoader(const char * filePath)
 
 	std::vector<std::string> d;
 
+	std::vector<float> vertPos;
+	std::vector<float> texCoords;
+	std::vector<float> normals;
+
+
 	for (std::string currentLine; std::getline(infile, currentLine); )
 	{
 		if (currentLine.find("v ", 0) != currentLine.npos)
@@ -14,7 +19,7 @@ ModelLoader::ModelLoader(const char * filePath)
 			d = SeparateString(currentLine, 2, " ");
 			for (int i = 0; i < d.size(); i++)
 			{
-				_vertPositions.push_back(std::stof(d[i]));
+				vertPos.push_back(std::stof(d[i]));
 			}
 		}
 		else if (currentLine.find("vt", 0) != currentLine.npos)
@@ -22,7 +27,7 @@ ModelLoader::ModelLoader(const char * filePath)
 			d = SeparateString(currentLine, 2, " ");
 			for (int i = 0; i < d.size(); i++)
 			{
-				_texCoords.push_back(std::stof(d[i]));
+				texCoords.push_back(std::stof(d[i]));
 			}
 		}
 		else if (currentLine.find("vn", 0) != currentLine.npos)
@@ -30,123 +35,32 @@ ModelLoader::ModelLoader(const char * filePath)
 			d = SeparateString(currentLine, 2, " ");
 			for (int i = 0; i < d.size(); i++)
 			{
-				_normals.push_back(std::stof(d[i]));
+				normals.push_back(std::stof(d[i]));
 			}
 		}
 		else if (currentLine.find("f ", 0) != currentLine.npos)
 		{
-			//GenerateIndexData(currentLine);
-			//GenerateVertexData(currentLine);
-			std::vector<int> fData = ParseFaceData2(currentLine, 2, '/');//-1);
-			for (int i = 0; i < fData.size(); i++)
-			{
-				_faces.push_back(fData[i]);
-			}
+			std::vector<int> fData = ParseFaceData(currentLine, 2, '/');//-1);
+			//for (int i = 0; i < fData.size(); i++)
+			//{
+			//	//_faces.push_back(fData[i]);
+			//}
 		}
 	}
-
-	GenerateVertexData();
-
-	//for (std::string currentLine; std::getline(infile, currentLine); )
-	//{
-	//	if (currentLine.find("f ", 0) != currentLine.npos)
-	//	{
-	//		GenerateVertexData(currentLine);
-	//	}
-	//}
-
 	infile.close();
 
-	for (int v = 0; v < _vertPositions.size()/3; v++) // Increment by 3(x, y, z)
-	{
-		for (int p = 0; p < 3; p++)
-		{
-			_vertexData.push_back(_vertPositions[(v * 3) + p]);
-		}
-
-		if (_texCoords.size() > 0)
-		{
-			for (int t = 0; t < 2; t++)
-			{
-				int index = (v * 2) + t;
-				if (index > _texCoords.size() - 1) // meaning there is less vt than v
-				{
-					_vertexData.push_back(0.0f);
-				}
-				else
-				{
-					_vertexData.push_back(_texCoords[index]);
-
-				}
-			}
-		}
-		else
-		{
-			_vertexData.push_back(0.0f);
-			_vertexData.push_back(0.0f);
-		}
-
-		if (_normals.size() > 0)
-		{
-			for (int n = 0; n < 3; n++)
-			{
-				int index = (v * 3) + n;
-
-				if (index > _normals.size() - 1) // meaning there is less vn than v
-				{
-					_vertexData.push_back(0.0f);
-				}
-				else
-				{
-					_vertexData.push_back(_normals[index]);
-				}
-			}
-		}
-		else
-		{
-			_vertexData.push_back(0.0f);
-			_vertexData.push_back(0.0f);
-			_vertexData.push_back(0.0f);
-		}
-	}
+	GenerateVertexData(vertPos, texCoords, normals);
+	GenerateIndexData();
 
 	PRINT("MODEL LOADER >> Loaded file at " << filePath);
-	PRINT("MODEL LOADER >> Vertices(v): " << _vertPositions.size() << "  Texture Coordinates(vt): " << _texCoords.size() << "  Vertex Normals(vn): " << _normals.size());
+	PRINT("MODEL LOADER >> Vertices(v): " << vertPos.size() << "  Texture Coordinates(vt): " << texCoords.size() << "  Vertex Normals(vn): " << normals.size());
 }
 
 ModelLoader::~ModelLoader()
 {
 }
 
-void ModelLoader::GenerateIndexData(const std::string &data)
-{
-	/*
-			v, vt and vn are simple to understand. f is more tricky. So, for f 8/11/7 7/12/7 6/10/7 :
-
-8/11/7 describes the first vertex of the triangle
-7/12/7 describes the second vertex of the triangle
-6/10/7 describes the third vertex of the triangle (duh)
-For the first vertex, 8 says which position to use. So in this case, -1.000000 1.000000 -1.000000 (index start to 1, not to 0 like in C++)
-11 says which texture coordinate to use. So in this case, 0.748355 0.998230
-7 says which normal to use. So in this case, 0.000000 1.000000 -0.000000
-			*/
-
-	
-	std::vector<std::string> faces = ParseFaceData(data, 2, '/');
-
-	for (int o = 0; o < faces.size(); o+=3)
-	{
-		//_faces.push_back(FaceData{ std::stoi(faces[o])-1,  std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
-		//_faces.push_back(FaceData{ std::stoi(faces[o])-1, std::stoi(faces[o + 1])-1, std::stoi(faces[o + 2])-1 }); // Store faces to create vertex data for opengl
-
-		if (o % 3 == 0)
-		{
-			_indexData.push_back(std::stoi(faces[o])-1);	// Indices for opengl
-		}
-	}
-}
-
-// non separator = start of triple, look for first value, if after previous value the next character is a separtor/whtiespace, insert 0, repeat until a triple is formed
+// non separator = start of triplet, look for first value, if after previous value the next character is a separtor/whtiespace, insert 0, repeat until a triple is formed
 std::vector<std::string> ModelLoader::SeparateString(std::string line, int startPos, std::string separator) const
 {
 	std::vector<std::string> data;
@@ -163,55 +77,32 @@ std::vector<std::string> ModelLoader::SeparateString(std::string line, int start
 	return data;
 }
 
-// WIP Different face index structures
-// 1/2/3 4/8/6
-std::vector<std::string> ModelLoader::ParseFaceData(std::string line, int startPos, char separator)
+/// <summary>
+/// Generates an index buffer for OpenGL
+/// </summary>
+void ModelLoader::GenerateIndexData()
 {
-	std::vector<std::string> data;
-
-	//PRINT(line);
-	std::vector<std::string> _sss = SeparateString(line, startPos, " ");
-	int index = line.find_first_not_of(separator, startPos); // Starting position to iterate
-	for (int i = 0; i < _sss.size(); i++)
+	for (int f = 0; f < _faceData.size(); f++)
 	{
-		PRINT(" " << _sss[i]);
-		// 0/0/0
-		for (int j = 0; j < _sss[i].size();)
+		for (int i = 0; i < _vertData.size(); i++)
 		{
-			int start = _sss[i].find_first_not_of("/", j);
-			int end = _sss[i].find_first_of("/", start);
-
-			PRINT(" " << _sss[i].substr(start, end-start));
-			data.push_back(_sss[i].substr(start, end - start));
-			if (end == std::string::npos)
+		
+			if (_faceData[f] == _vertData[i].triplet)
 			{
+				_indexData.push_back(i);
 				break;
 			}
-			else
-
-			{
-				j = end;
-			}
-		}
-
-		if (_sss[i].find("/") == std::string::npos)
-		{
-			PRINT(0);
-			PRINT(0);
-			data.push_back("0");
-			data.push_back("0");
-
 		}
 	}
-
-	return data;
 }
 
-void ModelLoader::GenerateIndices()
-{
-}
-
-void ModelLoader::GenerateVertexData()
+/// <summary>
+/// Generates a vertex buffer for OpenGL
+/// </summary>
+/// <param name="v">List of vertex positions</param>
+/// <param name="t">List of texture coordinates</param>
+/// <param name="n">List of normals</param>
+void ModelLoader::GenerateVertexData(std::vector<float> &v, std::vector<float> &t, std::vector<float> &n)
 {
 	// Vertex structure: v,v,v,  t,t,  n,n,n
 
@@ -219,52 +110,48 @@ void ModelLoader::GenerateVertexData()
 	int texCoordsOffset = 2;
 	int normOffset = 3;
 
-	//if (std::find(_faceData.begin(), _faceData.end(), fData) != _faceData.end())
-	//{
-	//	PRINT("DUPLICATE!");
-	//}
-	//else
-	//{
-	//	PRINT("NO DUPLICATE");
-
-	//}
-
 	// Add vertex equal operation
 	for (int i = 0; i < _faceData.size(); i++) // v/t/n
 	{
-		PRINT(_faceData[i].pos << "/" << _faceData[i].texCoord<< "/" << _faceData[i].normal);
-		Vertex x(
-			_faceData[i],
-			_vertPositions[vertPosOffset * (_faceData[i].pos -1)],
-			_vertPositions[(vertPosOffset * (_faceData[i].pos -1))+1],
-			_vertPositions[(vertPosOffset * (_faceData[i].pos -1))+2],
-			_texCoords[(texCoordsOffset * (_faceData[i].texCoord-1))],
-			_texCoords[(texCoordsOffset * (_faceData[i].texCoord-1))+1],
-			_normals[(normOffset * (_faceData[i].normal -1))],
-			_normals[(normOffset * (_faceData[i].normal -1))+1],
-			_normals[(normOffset * (_faceData[i].normal -1))+2]);
+		Vertex x(_faceData[i],
+			v[vertPosOffset * (_faceData[i].pos - 1)],
+			v[(vertPosOffset * ( _faceData[i].pos - 1)) + 1],
+			v[(vertPosOffset * (_faceData[i].pos - 1)) + 2],
+			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1 < 0) ? 0 : _faceData[i].texCoord - 1))] : 0,
+			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1) ? 0 : _faceData[i].texCoord - 1) + 1)] : 0,
+			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1) < 0) ? 0 : _faceData[i].normal - 1)] : 0,
+			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1)) + 1] : 0,
+			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1)) + 2] : 0);
+
+		if (std::find(_vertData.begin(), _vertData.end(), x) != _vertData.end())
+		{
+			//PRINT("DUPLICATE!");
+		}
+		else
+		{
+			//PRINT("NO DUPLICATE");
+			_vertData.push_back(x);
+			_vertexData.push_back(x.position[0]);
+			_vertexData.push_back(x.position[1]);
+			_vertexData.push_back(x.position[2]);
+			_vertexData.push_back(x.textureCoordinates[0]);
+			_vertexData.push_back(x.textureCoordinates[1]);
+			_vertexData.push_back(x.normals[0]);
+			_vertexData.push_back(x.normals[1]);
+			_vertexData.push_back(x.normals[2]);
+		}
 	}
-
-	//for (int i = 0; i < _faces.size(); i += 3) // v/t/n
-	//{
-	//	PRINT(_faces[i] << "/" << _faces[i + 1] << "/" << _faces[i + 2]);
-	//	PRINT(_faces[i] << "/" << _faces[i + 1] << "/" << _faces[i + 2]);
-	//	Vertex x(
-	//		_faces[i],
-	//		_vertPositions[vertPosOffset * (_faces[i] - 1)],
-	//		_vertPositions[(vertPosOffset * (_faces[i] - 1)) + 1],
-	//		_vertPositions[(vertPosOffset * (_faces[i] - 1)) + 2],
-	//		_texCoords[(texCoordsOffset * (_faces[i + 1] - 1))],
-	//		_texCoords[(texCoordsOffset * (_faces[i + 1] - 1)) + 1],
-	//		_normals[(normOffset * (_faces[i + 2] - 1))],
-	//		_normals[(normOffset * (_faces[i + 2] - 1)) + 1],
-	//		_normals[(normOffset * (_faces[i + 2] - 1)) + 2]);
-	//}
-
 }
 
-
-std::vector<int> ModelLoader::ParseFaceData2(std::string line, int startPos, char separator)
+// TODO Refactor
+/// <summary>
+/// Parse an .Obj face data e.g. f v or f v/vt/vn or f v//vn
+/// </summary>
+/// <param name="line">The data to parse in string</param>
+/// <param name="startPos">Starting position to parse. Normally 2 to ignore "f "</param>
+/// <param name="separator">The separator to use. Should be "/"</param>
+/// <returns>Returns a list of int of indices</returns>
+std::vector<int> ModelLoader::ParseFaceData(std::string line, int startPos, char separator)
 {
 	std::vector<int> data;
 
@@ -280,7 +167,6 @@ std::vector<int> ModelLoader::ParseFaceData2(std::string line, int startPos, cha
 			int start = _sss[i].find_first_not_of("/", j);
 			int end = _sss[i].find_first_of("/", start);
 
-			//PRINT(" " << _sss[i].substr(start, end - start));
 			data.push_back(stof(_sss[i].substr(start, end - start)));
 			if (end == std::string::npos)
 			{
@@ -301,19 +187,13 @@ std::vector<int> ModelLoader::ParseFaceData2(std::string line, int startPos, cha
 			data.push_back(0);
 
 		}
-
-
-		
-		
 	}
+
 	for (int f = 0; f < data.size(); f += 3)
 	{
 		FaceData fData(data[f], data[f + 1], data[f + 2]);
 		_faceData.push_back(fData);
-
 	}
-	
-
 
 	return data;
 }

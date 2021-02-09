@@ -17,16 +17,18 @@ struct FaceData
 
 	FaceData()
 	{
-
+		pos = 0;
+		texCoord = 0;
+		normal = 0;
 	};
 
 	FaceData(int posIndex, int texIndex, int normIndex)
 	{
-		pos = posIndex;
-		texCoord = texIndex;
-		normal = normIndex;
+		pos = (posIndex < 0) ? 0 : posIndex;
+		texCoord = (texIndex < 0) ? 0 : texIndex;
+		normal = (normIndex < 0) ? 0 : normIndex;
 
-		PRINT("FaceData " << pos << "/" << texCoord << "/" << normal);
+		//PRINT("FaceData " << pos << "/" << texCoord << "/" << normal);
 	}
 
 	bool operator==(const FaceData& other) const
@@ -51,14 +53,13 @@ struct Vertex
 		textureCoordinates.reserve(2);
 		normals.reserve(3);
 
-		//PRINT("XXXXX " << posX << " " << posY << " " <<posZ << " " << texU <<" " << texV);
 		triplet = t;
 
 		SetPosition(posX, posY, posZ);
 		SetTextureCoordinates(texU, texV);
 		SetNormals(normX, normY, normZ);
 		
-		PRINT("(" <<position[0] << ", " << position[1] << ", " << position[2] << ") (" << textureCoordinates[0] << ", " << textureCoordinates[1] << ") (" << normals[0] << ", " << normals[1] << ", " << normals[2] << ")");
+		//PRINT("(" <<position[0] << ", " << position[1] << ", " << position[2] << ") (" << textureCoordinates[0] << ", " << textureCoordinates[1] << ") (" << normals[0] << ", " << normals[1] << ", " << normals[2] << ")");
 	};
 
 	void SetPosition(float posX, float posY, float posZ)
@@ -80,6 +81,11 @@ struct Vertex
 		normals.push_back(normY);
 		normals.push_back(normZ);
 	}
+
+	bool operator==(const Vertex& other) const
+	{
+		return triplet == other.triplet; // or another approach as above
+	}
 };
 
 class ModelLoader
@@ -95,18 +101,13 @@ private:
 	std::vector<float> _vertexData;
 	std::vector<unsigned int> _indexData;
 
-	std::vector<float> _vertPositions;
-	std::vector<float> _texCoords;
-	std::vector<float> _normals;
-	std::vector<int> _faces;
 	std::vector<FaceData> _faceData;
+	std::vector<Vertex> _vertData;
 
 	std::vector<std::string> SeparateString(std::string line, int startPos, std::string separator) const;
-	void GenerateIndexData(const std::string &data);
-	void GenerateVertexData();
-	void GenerateIndices();
-	std::vector<std::string> ParseFaceData(std::string line, int startPos, char separator);
-	std::vector<int> ParseFaceData2(std::string line, int startPos, char separator);
+	void GenerateVertexData(std::vector<float> &v, std::vector<float> &t, std::vector<float> &n);
+	void GenerateIndexData();
+	std::vector<int> ParseFaceData(std::string line, int startPos, char separator);
 	
 };
 
