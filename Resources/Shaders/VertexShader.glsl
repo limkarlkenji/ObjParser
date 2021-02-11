@@ -11,14 +11,15 @@ out vec3 normal;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 mvp;
 
 void main()
 {
 	//texCoord = atexCoord;
-	normal = aNormal;
-	//normal = mat3(transpose(inverse(model))) * aNormal;  
-	fragmentPos = vec3(model * vec4(aPosition, 1.0f));
+	//normal = aNormal;
+	normal = mat3(transpose(inverse(model))) * aNormal;  
+	fragmentPos = vec3(model * vec4(aPosition, 1.0f)); // fragment position in world space
+	gl_Position = projection * view * vec4(fragmentPos, 1.0f);
 
-	//gl_Position = (projection * view * model) * aPosition;
-	gl_Position = (projection * view * vec4(fragmentPos, 1.0f));
+	//gl_Position = mvp * vec4(aPosition, 1.0f);
 };
