@@ -9,4 +9,7 @@ Libraries used:
 
 References:
 - [Wavefront OBJ Spec](http://paulbourke.net/dataformats/obj/)
-- [OBJ files used in testing](https://people.math.sc.edu/Burkardt/data/obj/obj.html)
+
+Models for testing:
+- [Cube](https://gist.github.com/MaikKlein/0b6d6bb58772c13593d0a0add6004c1c)
+- [Teapot](https://github.com/kevinroast/phoria.js/blob/master/teapot.obj)
