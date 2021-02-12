@@ -25,18 +25,48 @@ int main()
 	Context context(800, 600, "PROJECT1");
 
 	// Expected data
-	//std::vector<float> vertices =
-	//{
-	//	-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	//	0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	//	-0.5f, 0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	//	0.5f, 0.5f, 0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	//std::vector<float> vz = {
+	//	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+	//	-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
 
-	//	-0.5f, 0.5f, -0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	//	0.5f, 0.5f, -0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	//	-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	//	0.5f, -0.5f, -0.5f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+	//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+	//	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
 
+	//	-0.5f,  0.5f,  0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
+	//	-0.5f,  0.5f, -0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
+	//	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
+	//	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
+	//	-0.5f, -0.5f,  0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
+	//	-0.5f,  0.5f,  0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
+
+	//	 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+
+	//	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+
+	//	-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+	//	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+	//	-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f
 	//};
 
 	//std::vector<unsigned int> indices = {
@@ -44,51 +74,7 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	std::vector<float> vz = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-
-		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f,   -1.0f,  0.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f
-	};
-
-	ModelLoader cube("Resources/Models/Cube.obj");
+	ModelLoader cube("Resources/Models/teapot.obj");
 	ModelLoader lightSource("Resources/Models/cube.obj");
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
@@ -96,29 +82,24 @@ int main()
 	glm::vec3 cameraPosition(0.0f, 10.0f, 50.0f);
 
 	VertexArrayObject VAO;
-	//VertexBufferObject VBO(cube.GetVertexData());
-	VertexBufferObject VBO(vz);
+	VertexBufferObject VBO(cube.GetVertexData());
 	IndexBuffer IBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 }); // Index, size, stride, offset
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 2, 3, 8, 5 }); // Index, size, stride, offset
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 3, 8, 5 }); // Index, size, stride, offset
 
 	Shader cubeShader(Reader::Open("Resources/Shaders/VertexShader.glsl").c_str(), Reader::Open("Resources/Shaders/FragmentShader.glsl").c_str());
 	cubeShader.Use();
 	cubeShader.GetActiveUniformList();
-
 
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	// Create transformations
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	//model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
-	//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+	//model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 
-
-	//view = glm::translate(view, cameraPosition);
 	view = glm::lookAt(
 		cameraPosition,
 		glm::vec3(0.0f, 0.0f, 0.0f),
@@ -126,8 +107,6 @@ int main()
 	);
 
 	projection = glm::perspective(glm::radians(45.0f), (float)context.GetScreenWidth() / (float)context.GetScreenHeight(), 0.1f, 100.0f);
-
-	//glm::mat4 _mvp = projection * view * model;
 
 	glUniform3fv(cubeShader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
 	glUniform3fv(cubeShader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
@@ -188,21 +167,17 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 		processInput(context.MainWindow, model2, model, lightPosition);
 
 		cubeShader.Use();
-
 		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));	
-		glUniform3fv(cubeShader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
 		glUniform3fv(cubeShader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
 		glUniformMatrix4fv(cubeShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
-
 		VAO.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
 		lightSourceShader.Use();
 		glUniformMatrix4fv(lightSourceShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model2));
 		VAO2.Bind();
 		glDrawElements(GL_TRIANGLES, lightSource.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
-
 
 		glfwSwapBuffers(context.MainWindow);
 		glfwPollEvents(); // checks events
@@ -228,9 +203,7 @@ void processInput(GLFWwindow *window, glm::mat4 &model, glm::mat4 &cube, glm::ve
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
 		lightpos += glm::vec3(0.0f, 0.0f, -1.0f);
 		
-		//glm::vec3 k(glm::column(model, 3));
-		PRINT(lightpos.x << " " << lightpos.y << " " << lightpos.z);
-		
+		//PRINT(lightpos.x << " " << lightpos.y << " " << lightpos.z);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{

@@ -82,11 +82,11 @@ std::vector<std::string> ModelLoader::SeparateString(std::string line, int start
 /// </summary>
 void ModelLoader::GenerateIndexData()
 {
+
 	for (int f = 0; f < _faceData.size(); f++)
 	{
 		for (int i = 0; i < _vertData.size(); i++)
 		{
-		
 			if (_faceData[f] == _vertData[i].triplet)
 			{
 				_indexData.push_back(i);
@@ -119,10 +119,11 @@ void ModelLoader::GenerateVertexData(std::vector<float> &v, std::vector<float> &
 			v[(vertPosOffset * (_faceData[i].pos - 1)) + 2],
 			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1 < 0) ? 0 : _faceData[i].texCoord - 1))] : 0,
 			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1) ? 0 : _faceData[i].texCoord - 1) + 1)] : 0,
-			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1) < 0) ? 0 : _faceData[i].normal - 1)] : 0,
+			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1))] : 0,
 			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1)) + 1] : 0,
 			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1)) + 2] : 0);
 
+		
 		if (std::find(_vertData.begin(), _vertData.end(), x) != _vertData.end())
 		{
 			//PRINT("DUPLICATE!");
@@ -130,6 +131,7 @@ void ModelLoader::GenerateVertexData(std::vector<float> &v, std::vector<float> &
 		else
 		{
 			//PRINT("NO DUPLICATE");
+			//x.Log();
 			_vertData.push_back(x);
 			_vertexData.push_back(x.position[0]);
 			_vertexData.push_back(x.position[1]);
@@ -140,6 +142,7 @@ void ModelLoader::GenerateVertexData(std::vector<float> &v, std::vector<float> &
 			_vertexData.push_back(x.normals[1]);
 			_vertexData.push_back(x.normals[2]);
 		}
+
 	}
 }
 

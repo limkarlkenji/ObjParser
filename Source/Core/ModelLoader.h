@@ -31,6 +31,11 @@ struct FaceData
 		//PRINT("FaceData " << pos << "/" << texCoord << "/" << normal);
 	}
 
+	void Log()
+	{
+		PRINT("FaceData " << pos << "/" << texCoord << "/" << normal);
+	}
+
 	bool operator==(const FaceData& other) const
 	{
 		//return pos == rhs.pos; // or another approach as above
@@ -49,9 +54,9 @@ struct Vertex
 	
 	Vertex(FaceData t, float posX, float posY, float posZ, float texU, float texV, float normX, float normY, float normZ)
 	{
-		position.reserve(3);
+		/*position.reserve(3);
 		textureCoordinates.reserve(2);
-		normals.reserve(3);
+		normals.reserve(3);*/
 
 		triplet = t;
 
@@ -59,8 +64,13 @@ struct Vertex
 		SetTextureCoordinates(texU, texV);
 		SetNormals(normX, normY, normZ);
 		
-		//PRINT("(" <<position[0] << ", " << position[1] << ", " << position[2] << ") (" << textureCoordinates[0] << ", " << textureCoordinates[1] << ") (" << normals[0] << ", " << normals[1] << ", " << normals[2] << ")");
 	};
+
+	void Log()
+	{
+		triplet.Log();
+		PRINT("(" << position[0] << ", " << position[1] << ", " << position[2] << ") (" << textureCoordinates[0] << ", " << textureCoordinates[1] << ") (" << normals[0] << ", " << normals[1] << ", " << normals[2] << ")");
+	}
 
 	void SetPosition(float posX, float posY, float posZ)
 	{

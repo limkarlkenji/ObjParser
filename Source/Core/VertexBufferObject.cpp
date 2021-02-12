@@ -33,7 +33,7 @@ void VertexBufferObject::LogBuffer(std::vector<float> &data)
 	{
 		if (i % 8 == 0 && i < (data.size()))
 		{
-			PRINT("Vertex " <<  i << " [" << data[i] << "," << data[i + 1] << "," << data[i + 2] << "] :: [" << data[i+3] << "," << data[i+4] << "] :: [" << data[i+5] << "," << data[i + 6] << "," << data[i + 7] <<"]");
+			PRINT("Vertex " <<  (i/8) << " [" << data[i] << "," << data[i + 1] << "," << data[i + 2] << "] :: [" << data[i+3] << "," << data[i+4] << "] :: [" << data[i+5] << "," << data[i + 6] << "," << data[i + 7] <<"]");
 		}
 	}
 }
