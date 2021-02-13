@@ -182,6 +182,8 @@ std::vector<int> ModelLoader::ParseFaceData(std::string line, int startPos, char
 			}
 		}
 
+		// TODO Test f 0//0
+		// TODO Use MTL
 		if (_sss[i].find("/") == std::string::npos)
 		{
 			//PRINT(0);

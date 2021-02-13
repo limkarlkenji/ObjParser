@@ -17,7 +17,7 @@
 #include "Core/VertexBufferObject.h"
 #include "Core/IndexBuffer.h"
 
-void processInput(GLFWwindow *window, glm::mat4 &model, glm::mat4 &cube, glm::vec3 &lightPos);
+void processInput(GLFWwindow *window, glm::mat4 &model, glm::vec3 &lightPos);
 
 int main()
 {
@@ -74,7 +74,7 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	ModelLoader cube("Resources/Models/teapot.obj");
+	ModelLoader cube("Resources/Models/cube.obj");
 	ModelLoader lightSource("Resources/Models/cube.obj");
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
@@ -86,19 +86,25 @@ int main()
 	IndexBuffer IBO(cube.GetIndexData());
 
 	VAO.AddBuffer(&VBO, AttribPointerLayout{ 0, 3, 8, 0 }); // Index, size, stride, offset
-	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 3, 8, 5 }); // Index, size, stride, offset
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 1, 2, 8, 3 }); // Index, size, stride, offset
+	VAO.AddBuffer(&VBO, AttribPointerLayout{ 2, 3, 8, 5 }); // Index, size, stride, offset
 
-	Shader cubeShader(Reader::Open("Resources/Shaders/VertexShader.glsl").c_str(), Reader::Open("Resources/Shaders/FragmentShader.glsl").c_str());
+	Shader cubeShader(Reader::Open("Resources/Shaders/Default_VS.glsl").c_str(), Reader::Open("Resources/Shaders/Default_FS.glsl").c_str());
 	cubeShader.Use();
 	cubeShader.GetActiveUniformList();
 
+	// Create transformations
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	// Create transformations
+	Texture textureTest("Resources/Models/Material_ray.png");
+	textureTest.Bind();
+	glUniform1i(cubeShader.GetUniformLocation("tex"), 0);
+
+
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-	//model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+	//model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 
 	view = glm::lookAt(
 		cameraPosition,
@@ -114,10 +120,6 @@ int main()
 	glUniformMatrix4fv(cubeShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(cubeShader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniformMatrix4fv(cubeShader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
-
-
-	/*Texture textureTest("Resources/Models/Material_ray.png");
-	textureTest.Bind();*/
 
 	VAO.Unbind();
 	IBO.Unbind();
@@ -147,6 +149,7 @@ int main()
 
 	while (context.IsRendering())
 	{
+		processInput(context.MainWindow, model2, lightPosition);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -164,7 +167,7 @@ glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
 
-		processInput(context.MainWindow, model2, model, lightPosition);
+		
 
 		cubeShader.Use();
 		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));	
@@ -192,7 +195,7 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 // TODO work on lightpos
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window, glm::mat4 &model, glm::mat4 &cube, glm::vec3 &lightpos)
+void processInput(GLFWwindow *window, glm::mat4 &model, glm::vec3 &lightpos)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -202,8 +205,6 @@ void processInput(GLFWwindow *window, glm::mat4 &model, glm::mat4 &cube, glm::ve
 	{
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
 		lightpos += glm::vec3(0.0f, 0.0f, -1.0f);
-		
-		//PRINT(lightpos.x << " " << lightpos.y << " " << lightpos.z);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
@@ -231,32 +232,4 @@ void processInput(GLFWwindow *window, glm::mat4 &model, glm::mat4 &cube, glm::ve
 		lightpos = lightpos + glm::vec3(0.0f, -1.0f, 0.0f);
 	}
 
-
-
-	/*if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		cube = glm::rotate(cube, glm::radians(5.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		cube = glm::rotate(cube, glm::radians(5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		cube = glm::rotate(cube, glm::radians(5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{
-		cube = glm::rotate(cube, glm::radians(5.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-	}*/
-
-	//if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
-	//{
-	//	model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
-	//}
-
-	//if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
-	//{
-	//	model = glm::scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
-	//}
 }

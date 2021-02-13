@@ -27,8 +27,6 @@ struct FaceData
 		pos = (posIndex < 0) ? 0 : posIndex;
 		texCoord = (texIndex < 0) ? 0 : texIndex;
 		normal = (normIndex < 0) ? 0 : normIndex;
-
-		//PRINT("FaceData " << pos << "/" << texCoord << "/" << normal);
 	}
 
 	void Log()
@@ -79,17 +77,17 @@ struct Vertex
 		position.push_back(posZ);
 	}
 
-	void SetTextureCoordinates(float texU, float texV)
-	{
-		textureCoordinates.push_back(texU);
-		textureCoordinates.push_back(texV);
-	}
-
 	void SetNormals(float normX, float normY, float normZ)
 	{
 		normals.push_back(normX);
 		normals.push_back(normY);
 		normals.push_back(normZ);
+	}
+
+	void SetTextureCoordinates(float texU, float texV)
+	{
+		textureCoordinates.push_back(texU);
+		textureCoordinates.push_back(texV);
 	}
 
 	bool operator==(const Vertex& other) const
@@ -104,8 +102,8 @@ public:
 	ModelLoader(const char * filePath);
 	~ModelLoader();
 
-	std::vector<float> &GetVertexData() { return _vertexData; };
-	std::vector<unsigned int> &GetIndexData() { return _indexData; };
+	inline std::vector<float> &GetVertexData() { return _vertexData; };
+	inline std::vector<unsigned int> &GetIndexData() { return _indexData; };
 
 private:
 	std::vector<float> _vertexData;

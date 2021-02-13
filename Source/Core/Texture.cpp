@@ -33,7 +33,8 @@ Texture::~Texture()
 {
 }
 
-void Texture::Bind()
+void Texture::Bind(unsigned int slot)
 {
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, _textureId);
 }

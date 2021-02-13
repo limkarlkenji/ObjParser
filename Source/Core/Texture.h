@@ -10,7 +10,7 @@ public:
 	Texture(std::string);
 	~Texture();
 
-	void Bind();
+	void Bind(unsigned int slot = 0);
 private:
 	unsigned int _textureId;
 };
