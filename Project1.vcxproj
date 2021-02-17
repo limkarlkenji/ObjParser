@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Material.cpp" />
     <ClCompile Include="Source\Core\ModelLoader.cpp" />
     <ClCompile Include="Source\Core\IndexBuffer.cpp" />
     <ClCompile Include="Source\Core\Reader.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="Source\Core\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\Material.h" />
     <ClInclude Include="Source\Core\ModelLoader.h" />
     <ClInclude Include="Source\Core\IndexBuffer.h" />
     <ClInclude Include="Source\Core\Logging.h" />

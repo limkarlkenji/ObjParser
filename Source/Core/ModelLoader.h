@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include "Logging.h"
-
+#include "Material.h"
 
 struct FaceData
 {
@@ -36,8 +36,6 @@ struct FaceData
 
 	bool operator==(const FaceData& other) const
 	{
-		//return pos == rhs.pos; // or another approach as above
-		//PRINT("Duplicate found " << pos << "/" << texCoord << "/" << normal);
 		return pos == other.pos && texCoord == other.texCoord && normal == other.normal; // or another approach as above
 	}
 };
@@ -99,8 +97,10 @@ struct Vertex
 class ModelLoader
 {
 public:
-	ModelLoader(const char * filePath);
+	ModelLoader(std::string directory, std::string file);
 	~ModelLoader();
+
+	Material material;
 
 	inline std::vector<float> &GetVertexData() { return _vertexData; };
 	inline std::vector<unsigned int> &GetIndexData() { return _indexData; };

@@ -1,9 +1,9 @@
 #include "ModelLoader.h"
 
-ModelLoader::ModelLoader(const char * filePath)
+ModelLoader::ModelLoader(std::string directory, std::string file)
 {
 	std::ifstream infile;
-	infile.open(filePath);
+	infile.open(directory + "/" + file);
 
 	std::vector<std::string> d;
 
@@ -41,10 +41,11 @@ ModelLoader::ModelLoader(const char * filePath)
 		else if (currentLine.find("f ", 0) != currentLine.npos)
 		{
 			std::vector<int> fData = ParseFaceData(currentLine, 2, '/');//-1);
-			//for (int i = 0; i < fData.size(); i++)
-			//{
-			//	//_faces.push_back(fData[i]);
-			//}
+		}
+		else if (currentLine.find("mtllib", 0) != currentLine.npos)
+		{
+			d = SeparateString(currentLine, 6, " ");
+			material = Material(directory + "/" + d[0]);
 		}
 	}
 	infile.close();
@@ -52,7 +53,7 @@ ModelLoader::ModelLoader(const char * filePath)
 	GenerateVertexData(vertPos, texCoords, normals);
 	GenerateIndexData();
 
-	PRINT("MODEL LOADER >> Loaded file at " << filePath);
+	PRINT("MODEL LOADER >> Loaded file at " << directory);
 	PRINT("MODEL LOADER >> Vertices(v): " << vertPos.size() << "  Texture Coordinates(vt): " << texCoords.size() << "  Vertex Normals(vn): " << normals.size());
 }
 

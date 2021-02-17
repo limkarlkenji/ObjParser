@@ -1,5 +1,9 @@
 #include "Shader.h"
 
+Shader::Shader()
+{
+}
+
 Shader::Shader(const char * vertexSrc, const char * fragmentSrc) : _Id(0)
 {
 	unsigned int vertex, fragment;

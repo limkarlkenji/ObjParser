@@ -12,6 +12,7 @@
 #include "Core/Texture.h"
 
 #include "Core/Context.h"
+#include "Core/Material.h"
 #include "Core/Shader.h"
 #include "Core/VertexArrayObject.h"
 #include "Core/VertexBufferObject.h"
@@ -74,8 +75,8 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	ModelLoader cube("Resources/Models/cube.obj");
-	ModelLoader lightSource("Resources/Models/cube.obj");
+	ModelLoader cube("Resources/Models", "cube.obj");
+	ModelLoader lightSource("Resources/Models", "cube.obj");
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPosition(10.0f, 0, 0.0f);
