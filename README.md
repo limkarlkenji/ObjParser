@@ -1,5 +1,11 @@
 # ObjParser test project
-OpenGL obj loader
+OpenGL obj parser
+
+Will only parse triangles with format:
+f v/vt/vn, f v, and f v//vn
+
+
+![](objparser.gif)
 
 Libraries used:
 - [GLFW](https://www.glfw.org/)
@@ -11,5 +17,7 @@ References:
 - [Wavefront OBJ Spec](http://paulbourke.net/dataformats/obj/)
 
 Models for testing:
-- [Cube](https://gist.github.com/MaikKlein/0b6d6bb58772c13593d0a0add6004c1c)
+- [Cube](https://gist.github.com/noonat/1131091/450ad7bbb6e0c8fba1854cc86a9f6b7a224fca56)
 - [Teapot](https://github.com/kevinroast/phoria.js/blob/master/teapot.obj)
+
+

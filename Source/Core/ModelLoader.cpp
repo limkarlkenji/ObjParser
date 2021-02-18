@@ -44,8 +44,8 @@ ModelLoader::ModelLoader(std::string directory, std::string file)
 		}
 		else if (currentLine.find("mtllib", 0) != currentLine.npos)
 		{
-			d = SeparateString(currentLine, 6, " ");
-			material = Material(directory + "/" + d[0]);
+			//d = SeparateString(currentLine, 6, " ");
+			//material = Material(directory + "/" + d[0]);
 		}
 	}
 	infile.close();
@@ -119,7 +119,7 @@ void ModelLoader::GenerateVertexData(std::vector<float> &v, std::vector<float> &
 			v[(vertPosOffset * ( _faceData[i].pos - 1)) + 1],
 			v[(vertPosOffset * (_faceData[i].pos - 1)) + 2],
 			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1 < 0) ? 0 : _faceData[i].texCoord - 1))] : 0,
-			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1) ? 0 : _faceData[i].texCoord - 1) + 1)] : 0,
+			(t.size() > 0) ? t[(texCoordsOffset * ((_faceData[i].texCoord - 1 < 0) ? 0 : _faceData[i].texCoord - 1) + 1)] : 0,
 			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1))] : 0,
 			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1)) + 1] : 0,
 			(n.size() > 0) ? n[(normOffset * ((_faceData[i].normal - 1 < 0) ? 0 : _faceData[i].normal - 1)) + 2] : 0);
