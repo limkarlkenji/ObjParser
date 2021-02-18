@@ -44,8 +44,8 @@ ModelLoader::ModelLoader(std::string directory, std::string file)
 		}
 		else if (currentLine.find("mtllib", 0) != currentLine.npos)
 		{
-			//d = SeparateString(currentLine, 6, " ");
-			//material = Material(directory + "/" + d[0]);
+			d = SeparateString(currentLine, 6, " ");
+			material = directory + "/" + d[0];
 		}
 	}
 	infile.close();

@@ -75,7 +75,7 @@ int main()
 	//2, 1, 3,		// second triangle
 	//};
 
-	ModelLoader cube("Resources/Models", "teapot.obj");
+	ModelLoader cube("Resources/Models", "cube.obj");
 	ModelLoader lightSource("Resources/Models", "cube.obj");
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
@@ -94,6 +94,9 @@ int main()
 	cubeShader.Use();
 	cubeShader.GetActiveUniformList();
 
+	Material cubeMat(cube.material, cubeShader);
+	glUniform3fv(cubeShader.GetUniformLocation("specularColor"), 1, glm::value_ptr(glm::vec3(cubeMat.specularColor.x, cubeMat.specularColor.y, cubeMat.specularColor.z)));
+
 	// Create transformations
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
@@ -104,8 +107,8 @@ int main()
 
 
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-	//model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+	//model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 
 	view = glm::lookAt(
 		cameraPosition,

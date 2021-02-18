@@ -163,6 +163,7 @@
     <ClInclude Include="Source\Core\Reader.h" />
     <ClInclude Include="Source\Core\Shader.h" />
     <ClInclude Include="Source\Core\Context.h" />
+    <ClInclude Include="Source\Core\Vecs.h" />
     <ClInclude Include="Source\Core\VertexArrayObject.h" />
     <ClInclude Include="Source\Core\VertexBufferObject.h" />
     <ClInclude Include="Source\Vendor\stb_image.h" />

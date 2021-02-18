@@ -100,7 +100,7 @@ public:
 	ModelLoader(std::string directory, std::string file);
 	~ModelLoader();
 
-	Material material;
+	std::string material;
 
 	inline std::vector<float> &GetVertexData() { return _vertexData; };
 	inline std::vector<unsigned int> &GetIndexData() { return _indexData; };

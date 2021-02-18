@@ -10,6 +10,8 @@ uniform vec3 lightColor;
 uniform vec3 lightPosition;
 uniform vec3 viewPos;
 
+uniform vec3 specularColor;
+
 uniform sampler2D tex;
 
 void main()
@@ -29,7 +31,7 @@ void main()
 	vec3 viewDir = normalize(viewPos - fragmentPos);
 	vec3 reflectDir = reflect(-lightDir, norm);  
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	vec3 specular = specularStrength * spec * lightColor; 
+	vec3 specular = specularStrength * spec * specularColor; 
 
 	vec3 phong = (ambient + diffuse + specular) * color;
 	FragColor =  texture(tex, texCoord) * vec4(phong, 1.0f);
