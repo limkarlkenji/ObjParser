@@ -3,7 +3,7 @@
 IndexBuffer::IndexBuffer(std::vector<unsigned int> &data)
 {
 	glGenBuffers(1, &_Id);
-	PRINT("EBO >> EBO generated. Indices size: " << data.size());
+	PRINT("IBO >> IBO generated. Indices size: " << data.size());
 	//LogIndices(data);
 	Bind();
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(unsigned int), std::data(data), GL_STATIC_DRAW);
@@ -16,13 +16,13 @@ IndexBuffer::~IndexBuffer()
 
 void IndexBuffer::Bind()
 {
-	PRINT("EBO >> Binding " << _Id);
+	PRINT("IBO >> Binding " << _Id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Id);
 }
 
 void IndexBuffer::Unbind()
 {
-	PRINT("EBO >> Unbinding");
+	PRINT("IBO >> Unbinding");
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -43,7 +43,6 @@ void IndexBuffer::LogIndices(std::vector<unsigned int> &indices, std::vector<flo
 	{
 		if (i % 3 == 0 && i < (indices.size()))
 		{
-			//PRINT("INDEX " << i);
 			PRINT("Index " << indices[i] << "/" << indices[i + 1] << "/" << indices[i + 2] << " :: [" << 
 				vertices[indices[i] * 8] << ", " << vertices[indices[i] * 8+1] << ", " << vertices[indices[i] * 8+2] << "] [" <<
 				vertices[indices[i+1] * 8] << ", " << vertices[indices[i + 1] * 8+1] << ", " << vertices[indices[i + 1] * 8+2] << "] [" <<

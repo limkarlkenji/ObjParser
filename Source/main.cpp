@@ -135,6 +135,7 @@ int main()
 
 	Shader lightSourceShader(Reader::Open("Resources/Shaders/LightSource_VS.glsl").c_str(), Reader::Open("Resources/Shaders/LightSource_FS.glsl").c_str());
 	lightSourceShader.Use();
+	lightSourceShader.SetUniform3fv("color", lightColor);
 
 	// Create transformations
 	glm::mat4 model2 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -156,29 +157,15 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		/*glScissor(0, 0, context.GetScreenWidth()/2, 600);
-glEnable(GL_SCISSOR_TEST);
-glClearColor(0.5f, 0.3f, 0.5f, 1.0f);
-glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-glViewport(0, 0, context.GetScreenWidth() / 2, 600);
-glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-glScissor(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);
-glEnable(GL_SCISSOR_TEST);
-glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
-glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*/
-
-		
-
+		// Draw target object
 		cubeShader.Use();
 		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));	
 		cubeShader.SetUniform3fv("lightPosition", lightPosition);
 		cubeShader.SetUniformMat4fv("model", model);
 		VAO.Bind();
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
 		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
+		// Draw light source
 		lightSourceShader.Use();
 		lightSourceShader.SetUniformMat4fv("model", model2);
 		VAO2.Bind();
