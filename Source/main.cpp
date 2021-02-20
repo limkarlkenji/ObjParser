@@ -4,7 +4,6 @@
 
 #include <GLM/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Core/Reader.h"
@@ -95,7 +94,6 @@ int main()
 	cubeShader.GetActiveUniformList();
 
 	Material cubeMat(cube.material, cubeShader);
-	glUniform3fv(cubeShader.GetUniformLocation("specularColor"), 1, glm::value_ptr(glm::vec3(cubeMat.specularColor.x, cubeMat.specularColor.y, cubeMat.specularColor.z)));
 
 	// Create transformations
 	glm::mat4 view = glm::mat4(1.0f);
@@ -103,12 +101,12 @@ int main()
 
 	Texture textureTest("Resources/Images/test.png");
 	textureTest.Bind();
-	glUniform1i(cubeShader.GetUniformLocation("tex"), 0);
+	cubeShader.SetUniform1i("tex", 0);
 
 
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	//model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+	model = glm::scale(model, glm::vec3(8.0f, 8.0f, 8.0f));
 
 	view = glm::lookAt(
 		cameraPosition,
@@ -118,12 +116,12 @@ int main()
 
 	projection = glm::perspective(glm::radians(45.0f), (float)context.GetScreenWidth() / (float)context.GetScreenHeight(), 0.1f, 100.0f);
 
-	glUniform3fv(cubeShader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
-	glUniform3fv(cubeShader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
-	glUniform3fv(cubeShader.GetUniformLocation("viewPos"), 1, glm::value_ptr(cameraPosition));
-	glUniformMatrix4fv(cubeShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(cubeShader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-	glUniformMatrix4fv(cubeShader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
+	cubeShader.SetUniform3fv("lightColor", lightColor);
+	cubeShader.SetUniform3fv("lightPosition", lightPosition);
+	cubeShader.SetUniform3fv("viewPos", cameraPosition);
+	cubeShader.SetUniformMat4fv("model", model);
+	cubeShader.SetUniformMat4fv("projection", projection);
+	cubeShader.SetUniformMat4fv("view", view);
 
 	VAO.Unbind();
 	IBO.Unbind();
@@ -142,8 +140,8 @@ int main()
 	glm::mat4 model2 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	model2 = glm::translate(model2, lightPosition);
 
-	glUniformMatrix4fv(lightSourceShader.GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-	glUniformMatrix4fv(lightSourceShader.GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
+	lightSourceShader.SetUniformMat4fv("projection", projection);
+	lightSourceShader.SetUniformMat4fv("view", view);
 
 	VAO2.Unbind();
 	IBO2.Unbind();
@@ -175,14 +173,14 @@ glViewport(context.GetScreenWidth() / 2, 0, context.GetScreenWidth() / 2, 600);*
 
 		cubeShader.Use();
 		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));	
-		glUniform3fv(cubeShader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
-		glUniformMatrix4fv(cubeShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));
+		cubeShader.SetUniform3fv("lightPosition", lightPosition);
+		cubeShader.SetUniformMat4fv("model", model);
 		VAO.Bind();
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
 		glDrawElements(GL_TRIANGLES, cube.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 
 		lightSourceShader.Use();
-		glUniformMatrix4fv(lightSourceShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model2));
+		lightSourceShader.SetUniformMat4fv("model", model2);
 		VAO2.Bind();
 		glDrawElements(GL_TRIANGLES, lightSource.GetIndexData().size(), GL_UNSIGNED_INT, nullptr);
 

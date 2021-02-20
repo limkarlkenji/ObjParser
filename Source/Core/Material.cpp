@@ -4,7 +4,7 @@ Material::Material()
 {
 }
 
-Material::Material(std::string filePath, Shader &shader) : specularStrength(0.0f)
+Material::Material(std::string filePath, Shader &shader) : specularExponent(0.0f)
 {
 	PRINT("MATERIAL >> Loaded mtl " << filePath);
 	_shader = shader;
@@ -34,10 +34,12 @@ Material::Material(std::string filePath, Shader &shader) : specularStrength(0.0f
 		else if (currentLine.find(" Ns", 0) != currentLine.npos)
 		{
 			d = SeparateString(currentLine, currentLine.find("Ns", 0) + 2, " ");
-			specularStrength = std::stof(d[0]);
+			specularExponent = std::stof(d[0]);
 		}
 	}
 	infile.close();
+
+	SetUniforms();
 }
 
 Material::~Material()
@@ -58,4 +60,13 @@ std::vector<std::string> Material::SeparateString(std::string line, int startPos
 	}
 
 	return data;
+}
+
+void Material::SetUniforms()
+{
+	_shader.SetUniform3fv("ambientColor", glm::vec3(ambientColor.x, ambientColor.y, ambientColor.z));
+	_shader.SetUniform3fv("diffuseColor", glm::vec3(diffuseColor.x, diffuseColor.y, diffuseColor.z));
+	_shader.SetUniform1f("specularExponent", specularExponent);
+	_shader.SetUniform3fv("specularColor", glm::vec3(specularColor.x, specularColor.y, specularColor.z));
+
 }

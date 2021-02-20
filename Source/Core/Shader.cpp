@@ -61,7 +61,10 @@ Shader::Shader(const char * vertexSrc, const char * fragmentSrc) : _Id(0)
 
 Shader::~Shader()
 {
-	
+	/*glUniform3fv(cubeShader.GetUniformLocation("lightColor"), 1, glm::value_ptr(lightColor));
+	glUniform3fv(cubeShader.GetUniformLocation("lightPosition"), 1, glm::value_ptr(lightPosition));
+	glUniform3fv(cubeShader.GetUniformLocation("viewPos"), 1, glm::value_ptr(cameraPosition));
+	glUniformMatrix4fv(cubeShader.GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(model));*/
 }
 
 
@@ -83,11 +86,33 @@ unsigned int Shader::GetUniformLocation(const char* name) const
 	return loc;
 }
 
-void Shader::setVec3(const std::string &name, float x, float y, float z) const
+//void Shader::setVec3(const std::string &name, float x, float y, float z) const
+//{
+//	glUniform3f(glGetUniformLocation(_Id, name.c_str()), x, y, z);
+//	PRINT("setting");
+//}
+
+void Shader::SetUniform3fv(const char* uniformName, glm::vec3 value)
 {
-	glUniform3f(glGetUniformLocation(_Id, name.c_str()), x, y, z);
-	PRINT("setting");
+	glUniform3fv(GetUniformLocation(uniformName), 1, glm::value_ptr(value));
 }
+
+void Shader::SetUniformMat4fv(const char* uniformName, glm::mat4 value)
+{
+	glUniformMatrix4fv(GetUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::SetUniform1i(const char* name, int value)
+{
+	glUniform1i(GetUniformLocation(name), value);
+}
+
+void Shader::SetUniform1f(const char* name, float value)
+{
+	glUniform1f(GetUniformLocation(name), value);
+}
+
+
 void Shader::GetActiveUniformList() const
 {
 	GLint success;
@@ -108,3 +133,4 @@ void Shader::GetActiveUniformList() const
 		printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
 	}
 }
+
