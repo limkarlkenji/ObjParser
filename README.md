@@ -17,7 +17,7 @@ Dependencies:
 References:
 - [Wavefront OBJ specification](http://paulbourke.net/dataformats/obj/)
 - [MTL file specification](http://paulbourke.net/dataformats/mtl/)
-- 
+
 Models for testing:
 - [Cube](https://gist.github.com/noonat/1131091/450ad7bbb6e0c8fba1854cc86a9f6b7a224fca56)
 - [Teapot](https://github.com/kevinroast/phoria.js/blob/master/teapot.obj)
